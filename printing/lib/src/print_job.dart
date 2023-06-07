@@ -16,7 +16,8 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 
 import 'callback.dart';
 import 'raster.dart';
@@ -74,10 +75,18 @@ class PrintJobs {
       onHtmlRendered: onHtmlRendered,
       onCompleted: onCompleted,
       onPageRasterized: onPageRasterized,
-      useFFI: Platform.isMacOS || Platform.isIOS,
+      useFFI: _ffiUsage(),
     );
     _printJobs[job.index] = job;
     return job;
+  }
+
+  bool _ffiUsage() {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isMacOS || Platform.isIOS;
+    }
   }
 
   /// Retrive an existing job
